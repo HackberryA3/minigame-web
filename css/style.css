@@ -1,0 +1,105 @@
+@charset "UTF-8";
+
+:root {
+	--color-bg: #111;
+	--color-fg: #EEE;
+	--color-accent-hue: 170;
+	--color-raccent-hue: calc(var(--color-accent-hue) + 180);
+	--color-accent: hsl(var(--color-accent-hue), 50%, 50%);
+	--color-raccent: hsl(var(--color-raccent-hue), 50%, 50%);
+}
+
+body {
+	background-color: var(--color-bg);
+	color: var(--color-fg);
+}
+
+main {
+	width: 240px;
+	margin: 100px auto;
+	text-align: center;
+	font-weight: bold;
+
+	--border: 5px solid var(--color-accent);
+}
+
+section {
+	border: var(--border);
+	border-radius: 10px;
+}
+
+#info {
+	padding: 15px 0;
+
+	border-bottom: var(--border);
+
+	font-size: 1.25em;
+}
+#info.finalFortune {
+	animation-name: info;
+	animation-duration: 1s;
+	animation-timing-function: ease-in;
+	animation-iteration-count: 1;
+}
+@keyframes info {
+	0% {
+		color: transparent;
+	}
+	100% {
+		color: var(--color-fg);
+	}
+
+}
+
+#result {
+	padding: 25px 0;
+
+	font-size: 1.5em;
+}
+#result.finalFortune {
+	animation-name: result;
+	animation-duration: 0.25s;
+	animation-timing-function: steps(0, end);
+	animation-iteration-count: infinite;
+}
+
+@keyframes result {
+	0% {
+		color: var(--color-fg);
+	}
+
+	100% {
+		color: var(--color-raccent);
+	}
+}
+
+#drawBtn {
+	width: inherit;
+	margin: 20px auto;
+	padding: 10px 0px;
+
+	background-color: var(--color-accent);
+	color: inherit;
+
+	border-radius: 10px;
+
+	font-size: 1.5em;
+	font-weight: inherit;
+	cursor: pointer;
+}
+
+#drawBtn:hover {
+	background-color: #FFF;
+	color: var(--color-accent);
+
+	box-shadow: 0 0 40px var(--color-accent);
+}
+
+#drawBtn:disabled {
+	background-color: color-mix(in srgb-linear, var(--color-accent) 25%, #000 75%);
+	color: var(--color-fg);
+
+	box-shadow: none;
+
+	cursor: default;
+}
