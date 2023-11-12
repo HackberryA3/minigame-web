@@ -3,10 +3,11 @@
 :root {
 	--color-bg: #111;
 	--color-fg: #EEE;
-	--color-accent-hue: 170;
+	--color-accent-hue: 265;
 	--color-raccent-hue: calc(var(--color-accent-hue) + 180);
-	--color-accent: hsl(var(--color-accent-hue), 50%, 50%);
-	--color-raccent: hsl(var(--color-raccent-hue), 50%, 50%);
+	--color-saturation: 75%;
+	--color-accent: hsl(var(--color-accent-hue), var(--color-saturation), 50%);
+	--color-raccent: hsl(var(--color-raccent-hue), var(--color-saturation), 50%);
 }
 
 body {
@@ -19,6 +20,7 @@ main {
 	margin: 100px auto;
 	text-align: center;
 	font-weight: bold;
+	user-select: none;
 
 	--border: 5px solid var(--color-accent);
 }
