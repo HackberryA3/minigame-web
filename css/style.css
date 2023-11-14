@@ -81,7 +81,7 @@ section {
 
 	background-color: var(--color-accent);
 	color: inherit;
-	box-shadow: 0 7px color-mix(in srgb, var(--color-accent) 65%, #000 25%);
+	box-shadow: 0 7px color-mix(in srgb, var(--color-accent) 65%, #000 35%);
 
 	border-radius: 10px;
 
