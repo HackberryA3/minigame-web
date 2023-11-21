@@ -1,11 +1,32 @@
 import { Slot } from './slot.js';
 declare const confetti: any;
 
+const rolls = [
+	'🍒',
+	'🍉',
+	'7',
+	'☠️',
+	'🍒',
+	'🍓',
+	'🍒',
+	'🍎',
+]
+const badRolls = [
+	'☠️',
+	'☠️',
+	'☠️',
+	'☠️',
+	'☠️',
+	'☠️',
+	'☠️',
+	'7',
+]
+
 const startBtn = document.getElementById('startBtn') as HTMLButtonElement;
 const stopBtns = Array.from(document.getElementById('stopBtns')?.getElementsByClassName('stopBtn') as HTMLCollectionOf<HTMLButtonElement>);
 
 const slotParent = document.getElementById('slots') as HTMLElement;
-const slots = Array.from(slotParent.getElementsByClassName('slot') as HTMLCollectionOf<HTMLElement>).map(slot => new Slot(slot));
+const slots = Array.from(slotParent.getElementsByClassName('slot') as HTMLCollectionOf<HTMLElement>).map(slot => new Slot(slot, rolls));
 
 startBtn.addEventListener('click', startGame);
 
@@ -15,8 +36,14 @@ stopBtns.forEach((btn, i) => {
 
 	// Event
 	btn.addEventListener('click', async () => {
-		btn.disabled = true;
+		stopBtns.forEach(btn => btn.disabled = true);
 		await slots[i].stop();
+		getRunningSlots().forEach(running => {
+			slots.forEach((slot, i) => {
+				if (running === slot)
+					stopBtns[i].disabled = false;
+			});
+		});
 
 		if (checkLose()) {
 			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('lose'));
@@ -24,7 +51,7 @@ stopBtns.forEach((btn, i) => {
 			return;
 		}
 
-		if (IsLastOne() && !checkLose()) {
+		if (isLastOne() && !checkLose()) {
 			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('lastOne'));
 			return;
 		}
@@ -32,12 +59,36 @@ stopBtns.forEach((btn, i) => {
 		if (slots.every(slot => !slot.isRunning)) {
 			const isWin = checkWin();
 			if (isWin) {
-				getStoppedSlots().forEach(slot => slot.current?.element.classList.add('win'));
-				await showConfetti(2);
+				const reward = calcReward(slots[0].current?.element.textContent ?? '');
+				if (0 < reward) {
+					getStoppedSlots().forEach(slot => slot.current?.element.classList.add('win'));
+					showConfetti(2);
+				}
+				else
+				{
+					getStoppedSlots().forEach(slot => slot.current?.element.classList.add('bad'));
+				}
+				await setCoin(currentCoin() + reward, 1);
 			}
 
 			endGame();
 			return;
+		}
+
+		if (slots[i].current?.element.textContent === '☠️') {
+			stopBtns.forEach(btn => btn.disabled = true);
+			while (1 < getRunningSlots().length) {
+				await getRunningSlots()[0].stopAt('☠️');
+			}
+			getRunningSlots()[0].setRolls(badRolls);
+			getRunningSlots().forEach(running => {
+				slots.forEach((slot, i) => {
+					if (running === slot)
+						stopBtns[i].disabled = false;
+				});
+			});
+
+			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('bad'));
 		}
 	});
 });
@@ -51,11 +102,14 @@ function checkLose() {
 	const element = stopped[0].current?.element.textContent;
 	return stopped.some(slot => slot.current?.element.textContent !== element);
 }
-function IsLastOne() {
+function isLastOne() {
 	return getStoppedSlots().length === slots.length - 1;
 }
 function getStoppedSlots() {
 	return slots.filter(slot => !slot.isRunning);
+}
+function getRunningSlots() {
+	return slots.filter(slot => slot.isRunning);
 }
 function startGame() {
 	startBtn.disabled = true;
@@ -63,6 +117,8 @@ function startGame() {
 	stopBtns.forEach(btn => {
 		btn.disabled = false;
 	});
+
+	setCoin(currentCoin() - 100, 0.5);
 }
 async function endGame() {
 	stopBtns.forEach(btn => {
@@ -75,7 +131,15 @@ async function endGame() {
 	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('lastOne'));
 	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('win'));
 	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('lose'));
+	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('bad'));
 	// console.log(getStoppedSlots().map(slot => slot.current?.element.getAnimations()));
+
+	// バッドチャンスをリセットする
+	slots.forEach(slot => {
+		if(slot.rolls === badRolls)
+			slot.setRolls(rolls);
+	});
+
 	startBtn.disabled = false;
 }
 
@@ -104,4 +168,43 @@ async function showConfetti(sec: number) {
 	})();
 
 	await new Promise(resolve => setTimeout(resolve, sec * 1000));
+}
+
+
+
+/* Coin */
+const coinElement = document.getElementById('coin') as HTMLElement;
+function currentCoin() {
+	return Number(coinElement.textContent);
+}
+
+async function setCoin(coin: number, sec: number) {
+	const current = currentCoin();
+	const diff = coin - current;
+	const frame = 50;
+	const step = diff / sec / (1000 / frame);
+
+	for (let i = 1; i <= sec * (1000 / frame); i++) {
+		coinElement.textContent = (current + step * i).toFixed(0);
+		await new Promise(resolve => setTimeout(resolve, frame));
+	}
+}
+
+function calcReward(roll: string) {
+	switch (roll) {
+		case '🍒':
+			return 100;
+		case '🍓':
+			return 150;
+		case '🍉':
+			return 200;
+		case '🍎':
+			return 400;
+		case '7':
+			return 777;
+		case '☠️':
+			return -Math.max(0, currentCoin() / 2);
+		default:
+			throw new Error("Invalid element");
+	}
 }

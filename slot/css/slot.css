@@ -15,7 +15,6 @@ main {
 }
 
 .coin {
-	width: 100px;
 	padding: 5px 10px;
 
 	background-color: #333;
@@ -77,6 +76,9 @@ h1 {
 	margin: 0 auto;
 	line-height: 125px;
 
+	color: #F00;
+	text-shadow: 5px 5px #222;
+
 	font-size: 4em;
 
 	animation-name: reel;
@@ -120,10 +122,10 @@ h1 {
 }
 @keyframes lastOne {
 	0% {
-		color: #F80;
+		background-color: #F80;
 	}
 	100% {
-		color: transparent;
+		background-color: transparent;
 	}
 }
 .element.win {
@@ -135,10 +137,10 @@ h1 {
 }
 @keyframes win {
 	0% {
-		color: #F00;
+		background-color: #F00;
 	}
 	100% {
-		color: transparent;
+		background-color: transparent;
 	}
 }
 .element.lose {
@@ -150,10 +152,25 @@ h1 {
 }
 @keyframes lose {
 	0% {
-		color: #00F;
+		background-color: #00F;
 	}
 	100% {
-		color: transparent;
+		background-color: transparent;
+	}
+}
+.element.bad {
+	animation-name: bad;
+	animation-duration: 0.25s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-direction: alternate;
+}
+@keyframes bad {
+	0% {
+		background-color: #808;
+	}
+	100% {
+		background-color: transparent;
 	}
 }
 
