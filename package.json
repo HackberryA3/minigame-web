@@ -1,0 +1,19 @@
+{
+  "name": "minigame-web",
+  "version": "1.0.0",
+  "description": "My minigames",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HackberryA3/minigame-web.git"
+  },
+  "author": "HackberryA3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HackberryA3/minigame-web/issues"
+  },
+  "homepage": "https://github.com/HackberryA3/minigame-web#readme"
+}
