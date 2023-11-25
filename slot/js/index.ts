@@ -36,14 +36,9 @@ stopBtns.forEach((btn, i) => {
 
 	// Event
 	btn.addEventListener('click', async () => {
-		stopBtns.forEach(btn => btn.disabled = true);
+		disableStopBtns();
 		await slots[i].stop();
-		getRunningSlots().forEach(running => {
-			slots.forEach((slot, i) => {
-				if (running === slot)
-					stopBtns[i].disabled = false;
-			});
-		});
+		enableRunningStopBtns();
 
 		if (checkLose()) {
 			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('lose'));
@@ -76,17 +71,12 @@ stopBtns.forEach((btn, i) => {
 		}
 
 		if (slots[i].current?.element.textContent === '☠️') {
-			stopBtns.forEach(btn => btn.disabled = true);
+			disableStopBtns();
 			while (1 < getRunningSlots().length) {
 				await getRunningSlots()[0].stopAt('☠️');
 			}
 			getRunningSlots()[0].setRolls(badRolls);
-			getRunningSlots().forEach(running => {
-				slots.forEach((slot, i) => {
-					if (running === slot)
-						stopBtns[i].disabled = false;
-				});
-			});
+			enableRunningStopBtns();
 
 			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('bad'));
 		}
@@ -111,19 +101,26 @@ function getStoppedSlots() {
 function getRunningSlots() {
 	return slots.filter(slot => slot.isRunning);
 }
+function disableStopBtns() {
+	stopBtns.forEach(btn => btn.disabled = true);
+}
+function enableRunningStopBtns() {
+	getRunningSlots().forEach(running => {
+		slots.forEach((slot, i) => {
+			if (running === slot)
+				stopBtns[i].disabled = false;
+		});
+	});
+}
 function startGame() {
 	startBtn.disabled = true;
 	slots.forEach(slot => slot.start());
-	stopBtns.forEach(btn => {
-		btn.disabled = false;
-	});
+	enableRunningStopBtns();
 
 	setCoin(currentCoin() - 100, 0.5);
 }
 async function endGame() {
-	stopBtns.forEach(btn => {
-		btn.disabled = true;
-	});
+	disableStopBtns();
 
 	await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -172,7 +169,7 @@ async function showConfetti(sec: number) {
 
 
 
-/* Coin */
+//#region Coin
 const coinElement = document.getElementById('coin') as HTMLElement;
 function currentCoin() {
 	return Number(coinElement.textContent);
@@ -208,3 +205,4 @@ function calcReward(roll: string) {
 			throw new Error("Invalid element");
 	}
 }
+//#endregion
