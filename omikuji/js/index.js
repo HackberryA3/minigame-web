@@ -36,9 +36,8 @@ const comments = {
 //#endregion
 
 const draw = (prev) => {
-	const n = Math.floor(Math.random() * fortunes.length) + 1;
-	const i = n % fortunes.length;
-	const fortune = fortunes[i];
+	const n = Math.floor(Math.random() * fortunes.length);
+	const fortune = fortunes[n];
 	return fortune !== prev ? fortune : draw(prev);
 }
 
