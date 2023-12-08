@@ -126,7 +126,7 @@ export class Slot {
 		this._isRunning = false;
 	}
 	public async stopAt(roll: string) {
-		while (!this._elements.some(element => element.element.textContent === roll && element.getProgress() < 0.3)) {
+		while (!this._elements.some(element => element.element.textContent === roll && 0.05 < element.getProgress() && element.getProgress() < 0.4)) {
 			await new Promise(resolve => setTimeout(resolve, 10));
 		}
 

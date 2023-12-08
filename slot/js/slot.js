@@ -119,7 +119,7 @@ export class Slot {
     }
     stopAt(roll) {
         return __awaiter(this, void 0, void 0, function* () {
-            while (!this._elements.some(element => element.element.textContent === roll && element.getProgress() < 0.3)) {
+            while (!this._elements.some(element => element.element.textContent === roll && 0.05 < element.getProgress() && element.getProgress() < 0.4)) {
                 yield new Promise(resolve => setTimeout(resolve, 10));
             }
             const target = this._elements.filter(element => element.element.textContent === roll)[0];
