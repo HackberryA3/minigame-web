@@ -1,6 +1,7 @@
 import { Slot } from './slot.js';
 declare const confetti: any;
 
+//#region Rolls
 const rolls = [
 	'🍒',
 	'🍉',
@@ -21,6 +22,62 @@ const badRolls = [
 	'☠️',
 	'7',
 ]
+//#endregion
+
+//#region Animation
+const loseKeyframe = [
+	{
+		backgroundColor: '#0000FF',
+	},
+	{
+		backgroundColor: 'transparent',
+	},
+];
+const winKeyframe = [
+	{
+		backgroundColor: '#FF0000',
+	},
+	{
+		backgroundColor: 'transparent',
+	},
+];
+const badKeyframe = [
+	{
+		backgroundColor: '#880088',
+	},
+	{
+		backgroundColor: 'transparent',
+	},
+];
+const lastOneKeyframe = [
+	{
+		backgroundColor: '#FF8800',
+	},
+	{
+		backgroundColor: 'transparent',
+	},
+];
+
+const animOptionFast = {
+	duration: 100,
+	iterations: Infinity,
+	direction: 'alternate',
+} as unknown as KeyframeAnimationOptions;
+const animOptionSlow = {
+	duration: 250,
+	iterations: Infinity,
+	direction: 'alternate',
+} as unknown as KeyframeAnimationOptions;
+
+let anims: Animation[] = [];
+const startAnimation = (keyframe: Keyframe[], option: KeyframeAnimationOptions) => {
+	anims = anims.concat(getStoppedSlots().map(slot => slot.current?.element.animate(keyframe, option) as Animation));
+}
+const stopAnimation = () => {
+	anims.forEach(anim => anim.cancel());
+	anims = [];
+}
+//#endregion
 
 const startBtn = document.getElementById('startBtn') as HTMLButtonElement;
 const stopBtns = Array.from(document.getElementById('stopBtns')?.getElementsByClassName('stopBtn') as HTMLCollectionOf<HTMLButtonElement>);
@@ -41,13 +98,13 @@ stopBtns.forEach((btn, i) => {
 		enableRunningStopBtns();
 
 		if (checkLose()) {
-			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('lose'));
+			startAnimation(loseKeyframe, animOptionFast);
 			endGame();
 			return;
 		}
 
 		if (isLastOne() && !checkLose()) {
-			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('lastOne'));
+			startAnimation(lastOneKeyframe, animOptionSlow);
 			return;
 		}
 
@@ -56,12 +113,12 @@ stopBtns.forEach((btn, i) => {
 			if (isWin) {
 				const reward = calcReward(slots[0].current?.element.textContent ?? '');
 				if (0 < reward) {
-					getStoppedSlots().forEach(slot => slot.current?.element.classList.add('win'));
+					startAnimation(winKeyframe, animOptionFast);
 					showConfetti(2);
 				}
 				else
 				{
-					getStoppedSlots().forEach(slot => slot.current?.element.classList.add('bad'));
+					startAnimation(badKeyframe, animOptionFast);
 				}
 				await setCoin(currentCoin() + reward, 1);
 			}
@@ -78,7 +135,7 @@ stopBtns.forEach((btn, i) => {
 			getRunningSlots()[0].setRolls(badRolls);
 			enableRunningStopBtns();
 
-			getStoppedSlots().forEach(slot => slot.current?.element.classList.add('bad'));
+			startAnimation(badKeyframe, animOptionSlow);
 		}
 	});
 });
@@ -124,12 +181,8 @@ async function endGame() {
 
 	await new Promise(resolve => setTimeout(resolve, 1500));
 
-	// console.log(getStoppedSlots().map(slot => slot.current?.element.getAnimations()));
-	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('lastOne'));
-	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('win'));
-	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('lose'));
-	getStoppedSlots().forEach(slot => slot.current?.element.classList.remove('bad'));
-	// console.log(getStoppedSlots().map(slot => slot.current?.element.getAnimations()));
+	// アニメーションを全て止める
+	stopAnimation();
 
 	// バッドチャンスをリセットする
 	slots.forEach(slot => {

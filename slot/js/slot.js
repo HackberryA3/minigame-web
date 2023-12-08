@@ -49,8 +49,6 @@ export class SlotElement {
     }
     start() {
         var _a;
-        // クラスを変えると謎のアニメーションが追加され、pause()されていたアニメーションと2つになるので、アニメーションをキャンセルする
-        this._element.getAnimations().filter(anim => anim.id !== 'reel').forEach(anim => anim.cancel());
         (_a = this._element.getAnimations().filter(anim => anim.id === 'reel')[0]) === null || _a === void 0 ? void 0 : _a.play();
     }
     stop() {

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a;
 import { Slot } from './slot.js';
+//#region Rolls
 const rolls = [
     '🍒',
     '🍉',
@@ -29,6 +30,59 @@ const badRolls = [
     '☠️',
     '7',
 ];
+//#endregion
+//#region Animation
+const loseKeyframe = [
+    {
+        backgroundColor: '#0000FF',
+    },
+    {
+        backgroundColor: 'transparent',
+    },
+];
+const winKeyframe = [
+    {
+        backgroundColor: '#FF0000',
+    },
+    {
+        backgroundColor: 'transparent',
+    },
+];
+const badKeyframe = [
+    {
+        backgroundColor: '#880088',
+    },
+    {
+        backgroundColor: 'transparent',
+    },
+];
+const lastOneKeyframe = [
+    {
+        backgroundColor: '#FF8800',
+    },
+    {
+        backgroundColor: 'transparent',
+    },
+];
+const animOptionFast = {
+    duration: 100,
+    iterations: Infinity,
+    direction: 'alternate',
+};
+const animOptionSlow = {
+    duration: 250,
+    iterations: Infinity,
+    direction: 'alternate',
+};
+let anims = [];
+const startAnimation = (keyframe, option) => {
+    anims = anims.concat(getStoppedSlots().map(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.animate(keyframe, option); }));
+};
+const stopAnimation = () => {
+    anims.forEach(anim => anim.cancel());
+    anims = [];
+};
+//#endregion
 const startBtn = document.getElementById('startBtn');
 const stopBtns = Array.from((_a = document.getElementById('stopBtns')) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('stopBtn'));
 const slotParent = document.getElementById('slots');
@@ -40,21 +94,16 @@ stopBtns.forEach((btn, i) => {
     // Event
     btn.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b, _c;
-        stopBtns.forEach(btn => btn.disabled = true);
+        disableStopBtns();
         yield slots[i].stop();
-        getRunningSlots().forEach(running => {
-            slots.forEach((slot, i) => {
-                if (running === slot)
-                    stopBtns[i].disabled = false;
-            });
-        });
+        enableRunningStopBtns();
         if (checkLose()) {
-            getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.add('lose'); });
+            startAnimation(loseKeyframe, animOptionFast);
             endGame();
             return;
         }
         if (isLastOne() && !checkLose()) {
-            getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.add('lastOne'); });
+            startAnimation(lastOneKeyframe, animOptionSlow);
             return;
         }
         if (slots.every(slot => !slot.isRunning)) {
@@ -62,11 +111,11 @@ stopBtns.forEach((btn, i) => {
             if (isWin) {
                 const reward = calcReward((_b = (_a = slots[0].current) === null || _a === void 0 ? void 0 : _a.element.textContent) !== null && _b !== void 0 ? _b : '');
                 if (0 < reward) {
-                    getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.add('win'); });
+                    startAnimation(winKeyframe, animOptionFast);
                     showConfetti(2);
                 }
                 else {
-                    getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.add('bad'); });
+                    startAnimation(badKeyframe, animOptionFast);
                 }
                 yield setCoin(currentCoin() + reward, 1);
             }
@@ -74,18 +123,13 @@ stopBtns.forEach((btn, i) => {
             return;
         }
         if (((_c = slots[i].current) === null || _c === void 0 ? void 0 : _c.element.textContent) === '☠️') {
-            stopBtns.forEach(btn => btn.disabled = true);
+            disableStopBtns();
             while (1 < getRunningSlots().length) {
                 yield getRunningSlots()[0].stopAt('☠️');
             }
             getRunningSlots()[0].setRolls(badRolls);
-            getRunningSlots().forEach(running => {
-                slots.forEach((slot, i) => {
-                    if (running === slot)
-                        stopBtns[i].disabled = false;
-                });
-            });
-            getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.add('bad'); });
+            enableRunningStopBtns();
+            startAnimation(badKeyframe, animOptionSlow);
         }
     }));
 });
@@ -109,26 +153,29 @@ function getStoppedSlots() {
 function getRunningSlots() {
     return slots.filter(slot => slot.isRunning);
 }
+function disableStopBtns() {
+    stopBtns.forEach(btn => btn.disabled = true);
+}
+function enableRunningStopBtns() {
+    getRunningSlots().forEach(running => {
+        slots.forEach((slot, i) => {
+            if (running === slot)
+                stopBtns[i].disabled = false;
+        });
+    });
+}
 function startGame() {
     startBtn.disabled = true;
     slots.forEach(slot => slot.start());
-    stopBtns.forEach(btn => {
-        btn.disabled = false;
-    });
+    enableRunningStopBtns();
     setCoin(currentCoin() - 100, 0.5);
 }
 function endGame() {
     return __awaiter(this, void 0, void 0, function* () {
-        stopBtns.forEach(btn => {
-            btn.disabled = true;
-        });
+        disableStopBtns();
         yield new Promise(resolve => setTimeout(resolve, 1500));
-        // console.log(getStoppedSlots().map(slot => slot.current?.element.getAnimations()));
-        getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.remove('lastOne'); });
-        getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.remove('win'); });
-        getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.remove('lose'); });
-        getStoppedSlots().forEach(slot => { var _a; return (_a = slot.current) === null || _a === void 0 ? void 0 : _a.element.classList.remove('bad'); });
-        // console.log(getStoppedSlots().map(slot => slot.current?.element.getAnimations()));
+        // アニメーションを全て止める
+        stopAnimation();
         // バッドチャンスをリセットする
         slots.forEach(slot => {
             if (slot.rolls === badRolls)
@@ -160,7 +207,7 @@ function showConfetti(sec) {
         yield new Promise(resolve => setTimeout(resolve, sec * 1000));
     });
 }
-/* Coin */
+//#region Coin
 const coinElement = document.getElementById('coin');
 function currentCoin() {
     return Number(coinElement.textContent);
@@ -195,3 +242,4 @@ function calcReward(roll) {
             throw new Error("Invalid element");
     }
 }
+//#endregion
