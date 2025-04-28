@@ -1,0 +1,48 @@
+:root {
+	--bg: #24273a;
+	--accent: #8aadf4;
+	--accept: #a6da95;
+	--cencel: #ed8796;
+	--text: #cad3f5;
+}
+
+html {
+	font-family: "Iceberg";
+}
+body {
+    background-color: var(--bg);
+	text-align: center;
+	min-height: 0;
+}
+
+.canvas-container {
+	margin: 200px auto 0;
+}
+
+.btn {
+	font-family: "Iceberg";
+}
+.btn-custom-primary {
+	border-color: var(--accent);
+	color: var(--text);
+}
+.btn-custom-primary:hover {
+	background-color: var(--accent);
+	color: var(--bg);
+}
+.btn-custom-accept {
+	border-color: var(--accept);
+	color: var(--text);
+}
+.btn-custom-accept:hover {
+	background-color: var(--accept);
+	color: var(--bg);
+}
+.btn-custom-cencel {
+	border-color: var(--cencel);
+	color: var(--text);
+}
+.btn-custom-cencel:hover {
+	background-color: var(--cencel);
+	color: var(--bg);
+}
