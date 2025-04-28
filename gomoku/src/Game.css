@@ -1,0 +1,61 @@
+.Game-Container {
+	position: relative;
+	width: 800px;
+	height: 800px;
+	margin: 0 auto;
+}
+.Status-Container {
+	position: absolute;
+	top: calc(50% - 30px);
+	width: 100%;
+	text-align: center;
+}
+
+.Status {
+	margin: 0 auto 10px;
+	width: 400px;
+	font-weight: bold;
+	font-size: 50px;
+	background-color: #fcf5f088;
+	border-top: solid 5px #fcf5f0;
+	border-bottom: solid 5px #fcf5f0;
+}
+.BTN {
+	position: relative;
+
+	margin: 0 10px;
+	padding: 10 10px;
+	width: 200px;
+	height: 60px;
+
+	background-color: #a4a89b88;
+	color: white;
+	border-left: solid 5px #82ae46;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+
+	text-align: center;
+	font-size: 30px;
+	font-weight: bold;
+
+	z-index: 1;
+}
+.BTN:hover {
+	cursor: pointer
+}
+.BTN::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #82ae4688;
+	transform: translateX(-100px) scaleX(0);
+	transition: all .3s;
+	z-index: -1;
+}
+.BTN:hover::before {
+	transform: translateX(0) scaleX(1);
+}

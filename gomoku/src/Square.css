@@ -1,0 +1,39 @@
+.Square {
+	position: relative;
+
+	width: 35px;
+	height: 35px;
+	margin: 0 2.5px;
+	padding: 0;
+	border: none;
+	
+	background: transparent;
+	/* opacity: 0.5; */
+
+	z-index: 100;
+}
+
+.Empty-Square:hover {
+	box-sizing: border-box;
+	/* 何故かborderで2.5pxずれるので、translateで補正 */
+	translate: 0 -2.5px;
+	border: 4px dashed #00AAFF;
+	border-radius: 50%;
+}
+.Limited-Square {
+	box-sizing: border-box;
+	/* 何故かborderで2.5pxずれるので、translateで補正 */
+	translate: 0 -2.5px;
+	border: 4px dashed #FF4400;
+	border-radius: 50%;
+}
+
+.Square-Img {
+	position: absolute;
+
+	width: 150%;
+	height: 150%;
+
+	top: -25%;
+	left: -22%;
+}
