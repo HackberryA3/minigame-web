@@ -1,0 +1,95 @@
+@charset "utf-8";
+
+:root {
+	--color-bg: #EEEEEE;
+	--color-fg: #333333;
+	--color-base: #FF8800;
+	--color-base-dark: #CC6600;
+	user-select: none;
+	background: var(--color-bg);
+}
+
+html {
+	/* 10px に設定 */
+    font-size: 62.5%;
+}
+
+.font-size-S {
+    font-size: clamp(1.1rem, calc(0.9rem + 0.625vw), 1.6rem);
+}
+.font-size-M {
+    font-size: clamp(1.2rem, calc(1rem + 0.625vw), 1.7rem);
+}
+.font-size-L {
+    font-size: clamp(2.4rem, calc(2.2rem + 0.625vw), 2.9rem);
+}
+.font-size-XL {
+	font-size: clamp(4.8rem, calc(3rem + 0.625vw), 5.3rem);
+}
+
+
+body {
+	max-width: 800px;
+	/* min-width: 480px; */
+	min-height: 0;
+	margin: 100px auto;
+	text-align: center;
+}
+
+h1 {
+	color: var(--color-bg);
+	-webkit-text-stroke: var(--color-base) 3px;
+}
+
+button {
+	background-color: var(--color-base);
+	color: var(--color-bg);
+
+	padding: 10px 20px;
+	margin: 20px 0;
+
+	border: none;
+	border-radius: 15px;
+
+	font-weight: bold;
+	cursor: pointer;
+}
+button:disabled {
+	background-color: var(--color-base-dark);
+}
+
+input[type="number"] {
+	color: var(--color-base);
+
+	max-width: 70%;
+	padding: 10px;
+	margin: 10px 0;
+
+	font-size: 100px;
+	font-weight: bold;
+	text-align: center;
+
+	border: 1px solid var(--color-base);
+	border-radius: 15px;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type="number"] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+#result {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	left: 50%;
+	transform : translate(-50%, -50%);
+
+	-webkit-text-stroke: var(--color-base) 2px;
+	text-shadow: var(--color-fg) 0 0 10px;
+	color : var(--color-bg);
+}

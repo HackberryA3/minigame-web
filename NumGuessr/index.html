@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+
+	<title>NUM GUESSR</title>
+
+	<link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="main.js" defer></script>
+	<script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+</head>
+
+<body>
+	<h1 class="font-size-XL">NUMGUESSR</h1>
+	<p class="font-size-S">1から100までのランダムな数字を当てよう！！</p>
+
+	<div id="input-area">
+		<button id="start-btn" class="font-size-M">スタート🚀</button>
+
+		<div id="input-num-form">
+			<input type="number" id="input-num" min="1" max="100" required /><br />
+			<button type="submit" id="guess-btn" class="left font-size-M">推測🔍️</button>
+		</div>
+	</div>
+
+	<div id="result-area">
+		<div id="history" class="font-size-S"></div>
+
+		<p id="result" class="font-size-L">❌️</p>
+	</div>
+</body>
